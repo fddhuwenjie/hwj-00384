@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Home, Users, Trophy, BookOpen, User, LogOut, Gamepad2 } from 'lucide-react';
+import { Home, Users, Trophy, BookOpen, User, LogOut, Gamepad2, Award, FileText, Swords } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUserStore } from '@/stores/useUserStore';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,11 @@ const navItems = [
   { to: '/lobby', icon: Users, label: '大厅' },
   { to: '/questions', icon: BookOpen, label: '题库' },
   { to: '/rankings', icon: Trophy, label: '排行' },
+  { to: '/seasons', icon: Trophy, label: '赛季' },
+  { to: '/friends', icon: Users, label: '好友' },
+  { to: '/achievements', icon: Award, label: '成就' },
+  { to: '/contributions', icon: FileText, label: '贡献' },
+  { to: '/teams', icon: Swords, label: '战队' },
   { to: '/profile', icon: User, label: '我的' },
 ];
 

@@ -29,6 +29,7 @@ export interface Question {
   analysis: string;
   usageCount: number;
   correctCount: number;
+  contributorId?: string;
   createdAt: string;
 }
 
@@ -59,6 +60,9 @@ export interface RoomSettings {
   minDifficulty: number;
   maxDifficulty: number;
   password?: string;
+  gameMode?: 'normal' | 'team';
+  teamId?: number;
+  matchId?: number;
 }
 
 export interface Room {
@@ -105,6 +109,7 @@ export interface GameRecord {
 export interface UserStats {
   playerId: string;
   nickname: string;
+  avatar?: string;
   totalGames: number;
   wins: number;
   winRate: number;
@@ -112,10 +117,18 @@ export interface UserStats {
   avgResponseTime: number;
   maxStreak: number;
   totalScore: number;
+  seasonScore: number;
+  isOnline: boolean;
+  isInGame: boolean;
+  contributedQuestions: number;
+  contributedQuestionUsage: number;
+  teamId?: number;
+  teamRole?: string;
   rank: {
     weekly: number;
     monthly: number;
     allTime: number;
+    season: number;
   };
 }
 
@@ -123,9 +136,142 @@ export interface RankingItem {
   rank: number;
   playerId: string;
   nickname: string;
+  avatar?: string;
   score: number;
   winRate: number;
   games: number;
+}
+
+export interface Season {
+  id: number;
+  name: string;
+  year: number;
+  month: number;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'frozen' | 'archived';
+  createdAt: string;
+}
+
+export interface SeasonRankingItem {
+  rank: number;
+  playerId: string;
+  nickname: string;
+  avatar?: string;
+  score: number;
+  wins: number;
+  games: number;
+  winRate: number;
+}
+
+export interface Friend {
+  playerId: string;
+  nickname: string;
+  avatar?: string;
+  isOnline: boolean;
+  isInGame: boolean;
+  roomCode?: string;
+  addedAt: string;
+}
+
+export interface FriendRequest {
+  id: number;
+  senderId: string;
+  senderNickname: string;
+  senderAvatar?: string;
+  receiverId: string;
+  receiverNickname: string;
+  receiverAvatar?: string;
+  status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
+  createdAt: string;
+}
+
+export interface Achievement {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+  icon: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  points: number;
+  conditionType: string;
+  conditionValue: number;
+}
+
+export interface PlayerAchievement {
+  achievement: Achievement;
+  unlockedAt: string;
+}
+
+export interface ContributedQuestion {
+  id: number;
+  contributorId: string;
+  contributorNickname: string;
+  text: string;
+  options: string[];
+  correctAnswer: number;
+  difficulty: number;
+  category: Category;
+  analysis: string;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewerId?: string;
+  reviewNote?: string;
+  reviewedAt?: string;
+  createdAt: string;
+}
+
+export interface ContributorRankingItem {
+  rank: number;
+  playerId: string;
+  nickname: string;
+  avatar?: string;
+  contributedCount: number;
+  usedCount: number;
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  avatar?: string;
+  description: string;
+  ownerId: string;
+  totalWins: number;
+  totalLosses: number;
+  totalScore: number;
+  memberCount: number;
+  createdAt: string;
+}
+
+export interface TeamMember {
+  playerId: string;
+  nickname: string;
+  avatar?: string;
+  role: 'owner' | 'admin' | 'member';
+  joinedAt: string;
+}
+
+export interface TeamMatch {
+  id: number;
+  team1: Team;
+  team2: Team;
+  team1Score: number;
+  team2Score: number;
+  winnerId?: number;
+  roomCode?: string;
+  status: 'pending' | 'playing' | 'finished' | 'cancelled';
+  createdAt: string;
+  finishedAt?: string;
+}
+
+export interface TeamRankingItem {
+  rank: number;
+  teamId: number;
+  teamName: string;
+  teamAvatar?: string;
+  wins: number;
+  losses: number;
+  winRate: number;
+  totalScore: number;
 }
 
 export interface QuestionResult {
@@ -145,6 +291,16 @@ export interface DanmuMessage {
   content: string;
   color: string;
   timestamp: number;
+}
+
+export interface FriendInviteData {
+  id: string;
+  inviterId: string;
+  inviterNickname: string;
+  inviterAvatar?: string;
+  roomCode: string;
+  roomName?: string;
+  expiresAt: number;
 }
 
 export interface ClientToServerEvents {
@@ -169,6 +325,13 @@ export interface ClientToServerEvents {
     content: string;
     color?: string;
   }) => void;
+
+  'user:online': (data: { playerId: string }) => void;
+  'user:offline': (data: { playerId: string }) => void;
+  
+  'friend:invite': (data: { friendId: string; roomCode: string }) => void;
+  'friend:invite:accept': (data: { inviteId: string }) => void;
+  'friend:invite:decline': (data: { inviteId: string }) => void;
 }
 
 export interface ServerToClientEvents {
@@ -214,5 +377,27 @@ export interface ServerToClientEvents {
     questionIndex?: number;
     remainingTime?: number;
     playerStates: Record<string, { answered: boolean; score: number; streak: number }>;
+  }) => void;
+
+  'friend:request:received': (data: FriendRequest) => void;
+  'friend:request:accepted': (data: Friend) => void;
+  'friend:online': (data: { playerId: string }) => void;
+  'friend:offline': (data: { playerId: string }) => void;
+  'friend:game:start': (data: { playerId: string; roomCode: string }) => void;
+  'friend:game:end': (data: { playerId: string }) => void;
+
+  'friend:invite:received': (data: FriendInviteData) => void;
+
+  'achievement:unlocked': (data: {
+    achievement: Achievement;
+    unlockedAt: string;
+  }) => void;
+
+  'notification': (data: {
+    id: string;
+    type: 'info' | 'success' | 'warning' | 'error';
+    title: string;
+    message: string;
+    createdAt: number;
   }) => void;
 }

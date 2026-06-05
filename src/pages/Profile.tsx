@@ -11,13 +11,18 @@ import {
   User,
   BarChart3,
   Calendar,
+  Award,
+  FileText,
+  Gem,
+  Swords,
+  Crown,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { userApi, recordApi } from '@/api';
+import { userApi, recordApi, achievementApi, contributionApi, teamApi, seasonApi } from '@/api';
 import { CATEGORIES, CATEGORY_LABELS } from '../../shared/types';
-import type { UserStats, GameRecord } from '@/types';
+import type { UserStats, GameRecord, PlayerAchievement, Team } from '@/types';
 
 interface CategoryStat {
   category: string;
@@ -30,6 +35,17 @@ export default function Profile() {
   const navigate = useNavigate();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [records, setRecords] = useState<GameRecord[]>([]);
+  const [achievements, setAchievements] = useState<PlayerAchievement[]>([]);
+  const [allAchievements, setAllAchievements] = useState<number>(0);
+  const [contributionStats, setContributionStats] = useState<{
+    submitted: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+    usedCount: number;
+  } | null>(null);
+  const [team, setTeam] = useState<{ team: Team; role: string } | null>(null);
+  const [seasonRank, setSeasonRank] = useState<{ rank: number; score: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [playerId, setPlayerId] = useState<string>('');
 
@@ -46,6 +62,7 @@ export default function Profile() {
   }, []);
 
   const targetPlayerId = id || playerId;
+  const isOwnProfile = !id || id === playerId;
 
   useEffect(() => {
     if (!targetPlayerId) return;
@@ -53,14 +70,43 @@ export default function Profile() {
     const loadData = async () => {
       setLoading(true);
       try {
-        const [statsRes, recordsRes] = await Promise.all([
+        const [
+          statsRes,
+          recordsRes,
+          achievementsRes,
+          contributionRes,
+          teamRes,
+          seasonRankRes,
+        ] = await Promise.all([
           userApi.getStats(targetPlayerId),
           recordApi.getList({ playerId: targetPlayerId, pageSize: 10 }),
+          achievementApi.getPlayerAchievements(targetPlayerId),
+          contributionApi.getPlayerStats(targetPlayerId),
+          teamApi.getPlayerTeam(targetPlayerId),
+          seasonApi.getPlayerRank(targetPlayerId).catch(() => ({ data: null })),
         ]);
+        
         if (statsRes.data) {
           setStats(statsRes.data);
         }
         setRecords(recordsRes.items);
+        
+        if (achievementsRes.data) {
+          setAchievements(achievementsRes.data.unlocked);
+          setAllAchievements(achievementsRes.data.total);
+        }
+        
+        if (contributionRes.data) {
+          setContributionStats(contributionRes.data);
+        }
+        
+        if (teamRes.data) {
+          setTeam(teamRes.data);
+        }
+        
+        if (seasonRankRes.data) {
+          setSeasonRank(seasonRankRes.data);
+        }
       } catch (error) {
         console.error('Failed to load profile data:', error);
       } finally {
@@ -243,10 +289,26 @@ export default function Profile() {
               <h1 className="text-3xl font-bold font-display text-white mb-1">
                 {stats.nickname}
               </h1>
-              <p className="text-slate-400 flex items-center gap-2">
+              <p className="text-slate-400 flex items-center gap-2 flex-wrap">
                 <BarChart3 className="h-4 w-4" />
-                总排名: #{stats.rank.allTime} · 周排名: #{stats.rank.weekly} · 月排名: #{stats.rank.monthly}
+                总排名: #{stats.rank.allTime} · 赛季排名: #{stats.rank.season || '-'}
+                {seasonRank && (
+                  <span className="text-amber-400">
+                    · 赛季积分: {seasonRank.score}
+                  </span>
+                )}
               </p>
+              {team && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Swords className="h-4 w-4 text-violet-400" />
+                  <span className="text-violet-400">
+                    战队: {team.team.name}
+                    <Badge variant="info" className="ml-2 text-xs">
+                      {team.role === 'owner' ? '队长' : team.role === 'admin' ? '管理员' : '成员'}
+                    </Badge>
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -441,6 +503,178 @@ export default function Profile() {
             )}
           </CardContent>
         </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-amber-400" />
+                成就徽章墙
+              </CardTitle>
+              <CardDescription>
+                已解锁 {achievements.length} / {allAchievements} 个成就
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="ml-4"
+                  onClick={() => navigate('/achievements')}
+                >
+                  查看全部
+                </Button>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {achievements.length === 0 ? (
+                <div className="text-center py-8">
+                  <Award className="h-16 w-16 text-slate-600 mx-auto mb-4" />
+                  <p className="text-slate-400">暂无解锁成就</p>
+                  <p className="text-sm text-slate-500 mt-1">继续参与答题解锁更多成就</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {achievements.slice(0, 8).map((pa) => {
+                    const rarityColors: Record<string, string> = {
+                      common: 'border-slate-500 bg-slate-500/10',
+                      rare: 'border-blue-500 bg-blue-500/10',
+                      epic: 'border-purple-500 bg-purple-500/10',
+                      legendary: 'border-yellow-500 bg-yellow-500/10',
+                    };
+                    const rarityTextColors: Record<string, string> = {
+                      common: 'text-slate-400',
+                      rare: 'text-blue-400',
+                      epic: 'text-purple-400',
+                      legendary: 'text-yellow-400',
+                    };
+                    return (
+                      <div
+                        key={pa.achievement.id}
+                        className={`p-3 rounded-xl border-2 ${rarityColors[pa.achievement.rarity]} transition-transform hover:scale-105`}
+                      >
+                        <div className="text-3xl text-center mb-2">{pa.achievement.icon}</div>
+                        <p className={`text-sm font-medium text-center ${rarityTextColors[pa.achievement.rarity]}`}>
+                          {pa.achievement.name}
+                        </p>
+                        <p className="text-xs text-slate-500 text-center mt-1">
+                          {new Date(pa.unlockedAt).toLocaleDateString('zh-CN')}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-cyan-400" />
+                题目贡献统计
+              </CardTitle>
+              <CardDescription>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/contributions')}
+                >
+                  查看详情
+                </Button>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {contributionStats ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">提交总数</span>
+                    <span className="text-white font-medium">{contributionStats.submitted}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">已通过</span>
+                    <span className="text-emerald-400 font-medium">{contributionStats.approved}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">审核中</span>
+                    <span className="text-amber-400 font-medium">{contributionStats.pending}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">已拒绝</span>
+                    <span className="text-red-400 font-medium">{contributionStats.rejected}</span>
+                  </div>
+                  <div className="pt-3 border-t border-white/10">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-400 flex items-center gap-2">
+                        <Gem className="h-4 w-4" />
+                        被使用次数
+                      </span>
+                      <span className="text-cyan-400 font-bold text-lg">
+                        {contributionStats.usedCount}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <FileText className="h-12 w-12 text-slate-600 mx-auto mb-3" />
+                  <p className="text-slate-400 text-sm">暂无贡献数据</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {team && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Swords className="h-5 w-5 text-violet-400" />
+                我的战队
+              </CardTitle>
+              <CardDescription>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/teams')}
+                >
+                  查看战队详情
+                </Button>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-4xl">
+                  {team.team.name[0]}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl font-bold text-white">{team.team.name}</h3>
+                    <Badge variant="info">
+                      {team.role === 'owner' ? '队长' : team.role === 'admin' ? '管理员' : '成员'}
+                    </Badge>
+                  </div>
+                  <p className="text-slate-400 text-sm mb-3">{team.team.description}</p>
+                  <div className="flex items-center gap-6">
+                    <div>
+                      <span className="text-slate-400 text-sm">成员</span>
+                      <p className="text-white font-medium">{team.team.memberCount}人</p>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-sm">战绩</span>
+                      <p className="text-white font-medium">
+                        <span className="text-emerald-400">{team.team.totalWins}胜</span>
+                        {' / '}
+                        <span className="text-red-400">{team.team.totalLosses}负</span>
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-sm">总积分</span>
+                      <p className="text-violet-400 font-medium">{team.team.totalScore}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -8,9 +8,18 @@ import questionController from './controllers/QuestionController.js';
 import roomController, { rooms, getRoomQuestions } from './controllers/RoomController.js';
 import recordController from './controllers/RecordController.js';
 import userController from './controllers/UserController.js';
+import seasonController from './controllers/SeasonController.js';
+import achievementController from './controllers/AchievementController.js';
+import friendController from './controllers/FriendController.js';
+import contributionController from './controllers/ContributionController.js';
+import teamController from './controllers/TeamController.js';
 import { errorHandler, createError } from './middleware/errorHandler.js';
 import { seedQuestions } from './db/seed.js';
 import * as GameService from './services/GameService.js';
+import SeasonService from './services/SeasonService.js';
+import AchievementService from './services/AchievementService.js';
+import FriendService from './services/FriendService.js';
+import db from './db/database.js';
 
 import type {
   ClientToServerEvents,
@@ -41,6 +50,11 @@ app.use('/api/questions', questionController);
 app.use('/api/rooms', roomController);
 app.use('/api/records', recordController);
 app.use('/api/users', userController);
+app.use('/api/seasons', seasonController);
+app.use('/api/achievements', achievementController);
+app.use('/api/friends', friendController);
+app.use('/api/contributions', contributionController);
+app.use('/api/teams', teamController);
 
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
@@ -59,6 +73,49 @@ app.use(errorHandler);
 const socketRooms = new Map<string, Set<string>>();
 const playerSockets = new Map<string, string>();
 const viewerSockets = new Map<string, { roomCode: string; socketId: string }>();
+const pendingInvites = new Map<string, {
+  id: string;
+  inviterId: string;
+  inviterNickname: string;
+  inviterAvatar?: string;
+  roomCode: string;
+  receiverId: string;
+  expiresAt: number;
+}>();
+
+const updateUserOnlineStatus = (playerId: string, isOnline: boolean) => {
+  const stmt = db.prepare(`
+    UPDATE user_stats SET is_online = ?, updated_at = CURRENT_TIMESTAMP WHERE player_id = ?
+  `);
+  stmt.run(isOnline ? 1 : 0, playerId);
+
+  const friends = FriendService.getFriends(playerId, rooms);
+  friends.forEach((friend) => {
+    const socketId = playerSockets.get(friend.playerId);
+    if (socketId) {
+      io.to(socketId).emit(isOnline ? 'friend:online' : 'friend:offline', { playerId });
+    }
+  });
+};
+
+const updateUserInGameStatus = (playerId: string, isInGame: boolean, roomCode?: string) => {
+  const stmt = db.prepare(`
+    UPDATE user_stats SET is_in_game = ?, updated_at = CURRENT_TIMESTAMP WHERE player_id = ?
+  `);
+  stmt.run(isInGame ? 1 : 0, playerId);
+
+  const friends = FriendService.getFriends(playerId, rooms);
+  friends.forEach((friend) => {
+    const socketId = playerSockets.get(friend.playerId);
+    if (socketId) {
+      if (isInGame && roomCode) {
+        io.to(socketId).emit('friend:game:start', { playerId, roomCode });
+      } else {
+        io.to(socketId).emit('friend:game:end', { playerId });
+      }
+    }
+  });
+};
 
 const sendGameStateToViewers = (roomCode: string) => {
   const gameState = GameService.getGameState(roomCode);
@@ -132,6 +189,18 @@ const processQuestion = async (roomCode: string, questionData: {
         if (finishResult) {
           io.to(`room:${roomCode}`).emit('game:finished', finishResult);
           io.to(`room:${roomCode}:watch`).emit('game:finished', finishResult);
+
+          for (const standing of finishResult.finalStandings) {
+            updateUserInGameStatus(standing.playerId, false);
+            
+            const unlockedAchievements = AchievementService.checkAndUnlockAchievements(standing.playerId);
+            for (const ua of unlockedAchievements) {
+              const socketId = playerSockets.get(standing.playerId);
+              if (socketId) {
+                io.to(socketId).emit('achievement:unlocked', ua);
+              }
+            }
+          }
         }
 
         const room = rooms.get(roomCode);
@@ -145,6 +214,111 @@ const processQuestion = async (roomCode: string, questionData: {
 
 io.on('connection', (socket) => {
   console.log(`[Socket] Client connected: ${socket.id}`);
+
+  socket.on('user:online', (data) => {
+    const { playerId } = data;
+    console.log(`[Socket] user:online - ${playerId}`);
+    playerSockets.set(playerId, socket.id);
+    updateUserOnlineStatus(playerId, true);
+  });
+
+  socket.on('user:offline', (data) => {
+    const { playerId } = data;
+    console.log(`[Socket] user:offline - ${playerId}`);
+    playerSockets.delete(playerId);
+    updateUserOnlineStatus(playerId, false);
+  });
+
+  socket.on('friend:invite', (data) => {
+    const { friendId, roomCode } = data;
+    const inviterId = Array.from(playerSockets.entries()).find(([_, sid]) => sid === socket.id)?.[0];
+    
+    if (!inviterId) {
+      console.log('[Socket] friend:invite - inviter not found');
+      return;
+    }
+
+    console.log(`[Socket] friend:invite - ${inviterId} inviting ${friendId} to room ${roomCode}`);
+
+    const inviterStmt = db.prepare('SELECT nickname, avatar FROM user_stats WHERE player_id = ?');
+    const inviter = inviterStmt.get(inviterId) as { nickname: string; avatar?: string } | undefined;
+    
+    if (!inviter) return;
+
+    const inviteId = crypto.randomUUID();
+    const invite = {
+      id: inviteId,
+      inviterId,
+      inviterNickname: inviter.nickname,
+      inviterAvatar: inviter.avatar || undefined,
+      roomCode,
+      receiverId: friendId,
+      expiresAt: Date.now() + 5 * 60 * 1000,
+    };
+
+    pendingInvites.set(inviteId, invite);
+
+    const receiverSocketId = playerSockets.get(friendId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('friend:invite:received', {
+        id: invite.id,
+        inviterId: invite.inviterId,
+        inviterNickname: invite.inviterNickname,
+        inviterAvatar: invite.inviterAvatar,
+        roomCode: invite.roomCode,
+        expiresAt: invite.expiresAt,
+      });
+    }
+
+    setTimeout(() => {
+      pendingInvites.delete(inviteId);
+    }, 5 * 60 * 1000);
+  });
+
+  socket.on('friend:invite:accept', (data) => {
+    const { inviteId } = data;
+    console.log(`[Socket] friend:invite:accept - ${inviteId}`);
+
+    const invite = pendingInvites.get(inviteId);
+    if (!invite || invite.expiresAt < Date.now()) {
+      pendingInvites.delete(inviteId);
+      return;
+    }
+
+    pendingInvites.delete(inviteId);
+
+    const inviterSocketId = playerSockets.get(invite.inviterId);
+    if (inviterSocketId) {
+      io.to(inviterSocketId).emit('notification', {
+        id: crypto.randomUUID(),
+        type: 'success',
+        title: '邀请已接受',
+        message: `${invite.inviterNickname} 接受了你的房间邀请`,
+        createdAt: Date.now(),
+      });
+    }
+  });
+
+  socket.on('friend:invite:decline', (data) => {
+    const { inviteId } = data;
+    console.log(`[Socket] friend:invite:decline - ${inviteId}`);
+
+    const invite = pendingInvites.get(inviteId);
+    if (!invite) return;
+
+    pendingInvites.delete(inviteId);
+
+    const inviterSocketId = playerSockets.get(invite.inviterId);
+    if (inviterSocketId) {
+      io.to(inviterSocketId).emit('notification', {
+        id: crypto.randomUUID(),
+        type: 'info',
+        title: '邀请已拒绝',
+        message: `${invite.inviterNickname} 拒绝了你的房间邀请`,
+        createdAt: Date.now(),
+      });
+    }
+  });
 
   socket.on('room:join', async (data) => {
     const { roomCode, playerId } = data;
@@ -254,6 +428,18 @@ io.on('connection', (socket) => {
               if (finishResult) {
                 io.to(`room:${roomCode}`).emit('game:finished', finishResult);
                 io.to(`room:${roomCode}:watch`).emit('game:finished', finishResult);
+
+                for (const standing of finishResult.finalStandings) {
+                  updateUserInGameStatus(standing.playerId, false);
+                  
+                  const unlockedAchievements = AchievementService.checkAndUnlockAchievements(standing.playerId);
+                  for (const ua of unlockedAchievements) {
+                    const socketId = playerSockets.get(standing.playerId);
+                    if (socketId) {
+                      io.to(socketId).emit('achievement:unlocked', ua);
+                    }
+                  }
+                }
               }
 
               if (room) {
@@ -322,6 +508,8 @@ io.on('connection', (socket) => {
             break;
           }
         }
+        updateUserOnlineStatus(playerId, false);
+        updateUserInGameStatus(playerId, false);
         playerSockets.delete(playerId);
         break;
       }
@@ -355,6 +543,10 @@ const startGame = (roomCode: string) => {
   const playerIds = room.players.map((p) => p.id);
   const gameState = GameService.startGame(roomCode, questions, room.settings.timeLimit, playerIds);
 
+  playerIds.forEach((playerId) => {
+    updateUserInGameStatus(playerId, true, roomCode);
+  });
+
   io.to(`room:${roomCode}`).emit('game:started', {
     totalQuestions: questions.length,
     timeLimit: room.settings.timeLimit,
@@ -383,6 +575,17 @@ const initDatabase = async () => {
     console.log('[DB] Initializing database...');
     const result = await seedQuestions();
     console.log(`[DB] Seed complete: ${result.inserted} questions inserted, ${result.total} total`);
+
+    console.log('[Achievement] Initializing achievements...');
+    AchievementService.init();
+    console.log('[Achievement] Achievements initialized');
+
+    console.log('[Season] Initializing current season...');
+    const season = SeasonService.initCurrentSeason();
+    console.log(`[Season] Current season: ${season.name} (ID: ${season.id})`);
+
+    SeasonService.checkAndResetSeasonScores();
+    console.log('[Season] Season score check completed');
   } catch (error) {
     console.error('[DB] Seed failed:', error);
   }

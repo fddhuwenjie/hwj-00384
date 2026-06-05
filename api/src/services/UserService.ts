@@ -1,6 +1,7 @@
 import db from '../db/database.js';
 import type { UserStats, RankingItem, Category } from '../../../shared/types.js';
 import type { PaginatedResult, UserStatsRow, CategoryStatsRow } from '../types/index.js';
+import SeasonService from './SeasonService.js';
 
 const CATEGORIES: Category[] = ['technology', 'history', 'geography', 'literature', 'sports', 'entertainment'];
 
@@ -73,7 +74,8 @@ export const UserService = {
     const updateStmt = db.prepare(`
       UPDATE user_stats
       SET total_games = ?, total_score = ?, total_correct = ?, total_questions = ?,
-          avg_response_time = ?, max_streak = ?, wins = ?, last_played_at = ?, updated_at = ?
+          avg_response_time = ?, max_streak = ?, wins = ?, season_score = season_score + ?,
+          last_played_at = ?, updated_at = ?
       WHERE player_id = ?
     `);
     updateStmt.run(
@@ -84,6 +86,7 @@ export const UserService = {
       newAvgResponseTime,
       newMaxStreak,
       newWins,
+      score,
       now,
       now,
       playerId
@@ -141,6 +144,7 @@ export const UserService = {
     return {
       playerId: stats.player_id,
       nickname: stats.nickname,
+      avatar: stats.avatar || undefined,
       totalGames: stats.total_games,
       wins: stats.wins,
       winRate: stats.total_games > 0 ? Math.round((stats.wins / stats.total_games) * 100) : 0,
@@ -148,10 +152,16 @@ export const UserService = {
       avgResponseTime: stats.avg_response_time,
       maxStreak: stats.max_streak,
       totalScore: stats.total_score,
+      seasonScore: stats.season_score,
+      isOnline: stats.is_online === 1,
+      isInGame: stats.is_in_game === 1,
+      contributedQuestions: 0,
+      contributedQuestionUsage: 0,
       rank: {
         weekly: calculateRank(playerId, 'total_score'),
         monthly: calculateRank(playerId, 'total_score'),
         allTime: calculateRank(playerId, 'total_score'),
+        season: SeasonService.getPlayerSeasonRank(playerId),
       },
     };
   },

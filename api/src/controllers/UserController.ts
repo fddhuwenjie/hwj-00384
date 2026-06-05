@@ -3,6 +3,7 @@ import db from '../db/database.js';
 import { asyncHandler, createError } from '../middleware/errorHandler.js';
 import type { UserStats, RankingItem, Category } from '../../../shared/types.js';
 import type { CategoryStatsRow } from '../types/index.js';
+import SeasonService from '../services/SeasonService.js';
 
 const router = Router();
 
@@ -15,13 +16,17 @@ router.get('/:id/stats', asyncHandler(async (req: Request, res: Response) => {
   const userRow = userStmt.get(id) as {
     player_id: string;
     nickname: string;
+    avatar: string | null;
     total_games: number;
     wins: number;
     total_score: number;
+    season_score: number;
     total_correct: number;
     total_questions: number;
     avg_response_time: number;
     max_streak: number;
+    is_online: number;
+    is_in_game: number;
   } | undefined;
 
   if (!userRow) {
@@ -86,6 +91,7 @@ router.get('/:id/stats', asyncHandler(async (req: Request, res: Response) => {
   const stats: UserStats = {
     playerId: userRow.player_id,
     nickname: userRow.nickname,
+    avatar: userRow.avatar || undefined,
     totalGames: userRow.total_games,
     wins: userRow.wins,
     winRate: userRow.total_games > 0 ? Number((userRow.wins / userRow.total_games).toFixed(4)) : 0,
@@ -93,10 +99,16 @@ router.get('/:id/stats', asyncHandler(async (req: Request, res: Response) => {
     avgResponseTime: Number(userRow.avg_response_time.toFixed(2)),
     maxStreak: userRow.max_streak,
     totalScore: userRow.total_score,
+    seasonScore: userRow.season_score,
+    isOnline: userRow.is_online === 1,
+    isInGame: userRow.is_in_game === 1,
+    contributedQuestions: 0,
+    contributedQuestionUsage: 0,
     rank: {
       weekly: weeklyRank.rank,
       monthly: monthlyRank.rank,
       allTime: allTimeRank.rank,
+      season: SeasonService.getPlayerSeasonRank(userRow.player_id),
     },
   };
 

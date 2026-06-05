@@ -9,6 +9,7 @@ import type {
   UpdatePlayerRecordData,
   UpdateUserStatsData,
 } from '../types/index.js';
+import SeasonService from './SeasonService.js';
 
 export interface GameState {
   questions: Question[];
@@ -39,12 +40,12 @@ export const getGameState = (roomCode: string): GameState | undefined => {
   return gameStates.get(roomCode);
 };
 
-export const createGameRecord = (data: CreateGameRecordData): number => {
+export const createGameRecord = (data: CreateGameRecordData & { seasonId?: number | null }): number => {
   const stmt = db.prepare(`
-    INSERT INTO game_records (room_code, start_time, question_count)
-    VALUES (?, ?, ?)
+    INSERT INTO game_records (room_code, start_time, question_count, season_id)
+    VALUES (?, ?, ?, ?)
   `);
-  const result = stmt.run(data.roomCode, data.startTime, data.questionCount);
+  const result = stmt.run(data.roomCode, data.startTime, data.questionCount, data.seasonId || null);
   return Number(result.lastInsertRowid);
 };
 
@@ -171,10 +172,12 @@ export const startGame = (
   timeLimit: number,
   playerIds: string[]
 ): GameState => {
+  const currentSeason = SeasonService.getCurrentSeason();
   const gameRecordId = createGameRecord({
     roomCode,
     startTime: new Date().toISOString(),
     questionCount: questions.length,
+    seasonId: currentSeason?.id || null,
   });
 
   const scores = new Map<string, { total: number; streak: number; details: ScoreDetail[] }>();
@@ -498,6 +501,8 @@ export const finishGame = (roomCode: string): {
       maxStreak: standing.maxStreak,
       lastPlayedAt: new Date().toISOString(),
     });
+
+    SeasonService.updateSeasonScore(standing.playerId, standing.score, standing.rank === 1);
   }
 
   gameStates.delete(roomCode);
