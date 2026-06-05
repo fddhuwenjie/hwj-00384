@@ -1,0 +1,834 @@
+[
+  {
+    "text": "HTML的全称是什么？",
+    "options": ["超文本标记语言", "高级文本语言", "家庭工具标记语言", "超链接文本语言"],
+    "correctAnswer": 0,
+    "difficulty": 1,
+    "category": "technology",
+    "analysis": "HTML是HyperText Markup Language的缩写，中文译为超文本标记语言，是用于创建网页的标准标记语言。"
+  },
+  {
+    "text": "计算机中1GB等于多少MB？",
+    "options": ["100MB", "512MB", "1000MB", "1024MB"],
+    "correctAnswer": 3,
+    "difficulty": 1,
+    "category": "technology",
+    "analysis": "计算机采用二进制，1GB = 2^10 MB = 1024MB。硬盘厂商有时会用十进制的1000来计算。"
+  },
+  {
+    "text": "以下哪个不是编程语言？",
+    "options": ["Python", "Java", "HTML", "C++"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "technology",
+    "analysis": "HTML是标记语言（Markup Language），不是编程语言。编程语言需要有逻辑控制和运算能力。"
+  },
+  {
+    "text": "IP地址由多少位二进制组成？",
+    "options": ["16位", "32位", "64位", "128位"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "technology",
+    "analysis": "IPv4地址由32位二进制组成，通常表示为4个十进制数，每8位一组。IPv6则是128位。"
+  },
+  {
+    "text": "HTTP协议默认使用哪个端口？",
+    "options": ["21", "22", "80", "443"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "technology",
+    "analysis": "HTTP默认端口是80，HTTPS默认端口是443，FTP是21，SSH是22。"
+  },
+  {
+    "text": "CPU的主要功能是什么？",
+    "options": ["存储数据", "显示图像", "执行计算和控制", "连接网络"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "technology",
+    "analysis": "CPU（中央处理器）是计算机的核心，负责执行指令和处理数据，被称为计算机的大脑。"
+  },
+  {
+    "text": "以下哪个是关系型数据库？",
+    "options": ["MongoDB", "Redis", "MySQL", "Cassandra"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "technology",
+    "analysis": "MySQL是关系型数据库，使用SQL查询。MongoDB是文档数据库，Redis是键值存储，Cassandra是宽列存储。"
+  },
+  {
+    "text": "Git中的HEAD指的是什么？",
+    "options": ["最新提交的代码", "当前分支的最新提交", "主分支", "远程仓库"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "technology",
+    "analysis": "HEAD是一个指针，指向当前所在分支的最新提交。当切换分支时，HEAD也会随之移动。"
+  },
+  {
+    "text": "TCP三次握手的第二步是什么？",
+    "options": ["客户端发送SYN", "服务器发送SYN+ACK", "客户端发送ACK", "服务器发送FIN"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "technology",
+    "analysis": "TCP三次握手：1.客户端SYN → 2.服务器SYN+ACK → 3.客户端ACK。目的是确保双方都有发送和接收能力。"
+  },
+  {
+    "text": "RESTful API中，哪个方法用于更新资源？",
+    "options": ["GET", "POST", "PUT", "DELETE"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "technology",
+    "analysis": "PUT用于完整更新资源，PATCH用于部分更新，POST用于创建，GET用于获取，DELETE用于删除。"
+  },
+  {
+    "text": "以下哪个排序算法的平均时间复杂度是O(n log n)？",
+    "options": ["冒泡排序", "插入排序", "快速排序", "选择排序"],
+    "correctAnswer": 2,
+    "difficulty": 3,
+    "category": "technology",
+    "analysis": "快速排序、归并排序、堆排序的平均时间复杂度都是O(n log n)。冒泡、插入、选择排序是O(n²)。"
+  },
+  {
+    "text": "Linux中查看当前目录的命令是什么？",
+    "options": ["cd", "ls", "pwd", "dir"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "technology",
+    "analysis": "pwd（print working directory）显示当前工作目录的完整路径。ls是列出目录内容，cd是切换目录。"
+  },
+  {
+    "text": "JavaScript中哪个方法用于向数组末尾添加元素？",
+    "options": ["push()", "pop()", "shift()", "unshift()"],
+    "correctAnswer": 0,
+    "difficulty": 2,
+    "category": "technology",
+    "analysis": "push()在末尾添加，pop()从末尾移除，unshift()在开头添加，shift()从开头移除。"
+  },
+  {
+    "text": "什么是死锁？",
+    "options": ["程序运行太慢", "两个进程互相等待对方释放资源", "内存不足", "网络中断"],
+    "correctAnswer": 1,
+    "difficulty": 4,
+    "category": "technology",
+    "analysis": "死锁是指两个或多个进程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去。"
+  },
+  {
+    "text": "React中哪个Hook用于处理副作用？",
+    "options": ["useState", "useEffect", "useContext", "useReducer"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "technology",
+    "analysis": "useEffect用于处理数据获取、订阅、手动修改DOM等副作用操作。它相当于类组件生命周期方法的组合。"
+  },
+  {
+    "text": "以下哪个不是CAP定理的特性？",
+    "options": ["一致性", "可用性", "分区容错性", "持久性"],
+    "correctAnswer": 3,
+    "difficulty": 4,
+    "category": "technology",
+    "analysis": "CAP定理指出分布式系统不可能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）。持久性是ACID的特性。"
+  },
+  {
+    "text": "Redis的主要数据结构不包括以下哪个？",
+    "options": ["String", "List", "Tree", "Hash"],
+    "correctAnswer": 2,
+    "difficulty": 3,
+    "category": "technology",
+    "analysis": "Redis支持String、List、Set、Sorted Set、Hash、Stream等数据结构，但不支持原生的Tree结构。"
+  },
+  {
+    "text": "HTTPS使用的加密协议是什么？",
+    "options": ["SSL", "TLS", "SSH", "IPSec"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "technology",
+    "analysis": "现代HTTPS使用TLS（传输层安全）协议，SSL是其前身，已被认为不安全。"
+  },
+  {
+    "text": "秦始皇统一六国是在哪一年？",
+    "options": ["公元前221年", "公元前202年", "公元前256年", "公元前210年"],
+    "correctAnswer": 0,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "公元前221年，秦王嬴政统一六国，建立了中国历史上第一个统一的中央集权封建国家——秦朝。"
+  },
+  {
+    "text": "中国历史上第一个奴隶制王朝是哪个？",
+    "options": ["商朝", "夏朝", "周朝", "秦朝"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "夏朝（约公元前2070年-约公元前1600年）是中国史书记载的第一个世袭制王朝，由禹建立。"
+  },
+  {
+    "text": "美国独立宣言签署于哪一年？",
+    "options": ["1765年", "1774年", "1776年", "1789年"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "1776年7月4日，大陆会议通过《独立宣言》，宣告美利坚合众国诞生。这一天后来成为美国独立日。"
+  },
+  {
+    "text": "丝绸之路的开辟者是谁？",
+    "options": ["班超", "张骞", "卫青", "霍去病"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "张骞奉汉武帝之命两次出使西域，开辟了东西方交流的通道，后被称为丝绸之路。"
+  },
+  {
+    "text": "第一次世界大战爆发的导火索是什么事件？",
+    "options": ["珍珠港事件", "萨拉热窝事件", "卢沟桥事变", "波士顿倾茶事件"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "1914年6月28日，奥匈帝国皇储斐迪南大公在萨拉热窝遇刺，成为第一次世界大战的导火索。"
+  },
+  {
+    "text": "中国四大发明不包括以下哪个？",
+    "options": ["造纸术", "印刷术", "地动仪", "火药"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "中国四大发明是：造纸术、印刷术、火药、指南针。地动仪是张衡发明的，但不属于四大发明。"
+  },
+  {
+    "text": "文艺复兴起源于哪个国家？",
+    "options": ["法国", "英国", "意大利", "德国"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "文艺复兴于14世纪在意大利各城市兴起，15世纪扩展到欧洲各国，核心是人文主义精神。"
+  },
+  {
+    "text": "以下哪位是唐朝的开国皇帝？",
+    "options": ["李世民", "李渊", "李隆基", "李治"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "唐高祖李渊于618年建立唐朝，定都长安。李世民是第二位皇帝（唐太宗）。"
+  },
+  {
+    "text": "工业革命首先发生在哪个国家？",
+    "options": ["美国", "法国", "德国", "英国"],
+    "correctAnswer": 3,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "工业革命于18世纪60年代首先在英国开始，以蒸汽机的发明和广泛应用为标志。"
+  },
+  {
+    "text": "以下哪个不是中国历史上的古都？",
+    "options": ["北京", "西安", "洛阳", "苏州"],
+    "correctAnswer": 3,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "中国著名古都有西安、洛阳、北京、南京、开封、杭州等。苏州是历史文化名城，但不是大一统王朝的都城。"
+  },
+  {
+    "text": "日本偷袭珍珠港发生在哪一年？",
+    "options": ["1939年", "1940年", "1941年", "1942年"],
+    "correctAnswer": 2,
+    "difficulty": 3,
+    "category": "history",
+    "analysis": "1941年12月7日，日本偷袭美国太平洋舰队基地珍珠港，美国次日对日宣战，太平洋战争爆发。"
+  },
+  {
+    "text": "戊戌变法持续了多少天？",
+    "options": ["98天", "103天", "108天", "112天"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "history",
+    "analysis": "戊戌变法从1898年6月11日光绪帝颁布《明定国是诏》开始，到9月21日慈禧太后发动政变为止，历时103天，又称百日维新。"
+  },
+  {
+    "text": "以下哪位是《史记》的作者？",
+    "options": ["班固", "司马迁", "司马光", "陈寿"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "《史记》是西汉史学家司马迁撰写的中国历史上第一部纪传体通史，被鲁迅誉为史家之绝唱，无韵之离骚。"
+  },
+  {
+    "text": "冷战开始的标志是什么？",
+    "options": ["马歇尔计划", "杜鲁门主义", "北约成立", "华约成立"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "history",
+    "analysis": "1947年3月杜鲁门主义的出台，标志着美苏战时同盟关系破裂、冷战开始。马歇尔计划是冷战在经济方面的表现。"
+  },
+  {
+    "text": "以下哪个朝代存续时间最长？",
+    "options": ["汉朝", "唐朝", "宋朝", "周朝"],
+    "correctAnswer": 3,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "周朝（公元前1046年-公元前256年）存续约791年，分为西周和东周，是中国历史上最长的朝代。"
+  },
+  {
+    "text": "辛亥革命的领导人是谁？",
+    "options": ["康有为", "梁启超", "孙中山", "黄兴"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "辛亥革命由孙中山领导，1911年推翻了清朝统治，结束了中国两千多年的封建君主专制制度。"
+  },
+  {
+    "text": "第二次世界大战中，诺曼底登陆的日期是？",
+    "options": ["1944年6月6日", "1945年5月8日", "1941年12月7日", "1945年8月15日"],
+    "correctAnswer": 0,
+    "difficulty": 4,
+    "category": "history",
+    "analysis": "诺曼底登陆发生在1944年6月6日，代号霸王行动，是人类历史上最大规模的两栖登陆作战。"
+  },
+  {
+    "text": "明朝的开国皇帝是谁？",
+    "options": ["朱棣", "朱元璋", "朱标", "朱允炆"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "history",
+    "analysis": "明太祖朱元璋于1368年建立明朝，定都应天府（今南京），推翻了元朝统治。"
+  },
+  {
+    "text": "世界上最高的山峰是哪座？",
+    "options": ["乔戈里峰", "珠穆朗玛峰", "干城章嘉峰", "洛子峰"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "geography",
+    "analysis": "珠穆朗玛峰海拔8848.86米，是世界第一高峰，位于中国与尼泊尔边境。"
+  },
+  {
+    "text": "世界上最大的沙漠是哪个？",
+    "options": ["戈壁沙漠", "撒哈拉沙漠", "阿拉伯沙漠", "塔克拉玛干沙漠"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "geography",
+    "analysis": "撒哈拉沙漠面积约906万平方公里，是世界最大的沙漠，位于非洲北部。"
+  },
+  {
+    "text": "中国最长的河流是哪条？",
+    "options": ["黄河", "长江", "珠江", "淮河"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "geography",
+    "analysis": "长江全长约6300公里，是中国第一长河，也是世界第三长河。"
+  },
+  {
+    "text": "世界上面积最大的国家是哪个？",
+    "options": ["中国", "美国", "加拿大", "俄罗斯"],
+    "correctAnswer": 3,
+    "difficulty": 1,
+    "category": "geography",
+    "analysis": "俄罗斯国土面积约1709.82万平方公里，是世界上面积最大的国家。"
+  },
+  {
+    "text": "以下哪个是世界四大洋中最大的？",
+    "options": ["大西洋", "太平洋", "印度洋", "北冰洋"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "geography",
+    "analysis": "太平洋面积约1.65亿平方公里，是世界上最大、最深的大洋。"
+  },
+  {
+    "text": "北京位于中国的哪个区域？",
+    "options": ["华东地区", "华北地区", "华中地区", "东北地区"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "geography",
+    "analysis": "北京位于华北平原北部，属于华北地区，是中华人民共和国首都。"
+  },
+  {
+    "text": "世界上最大的淡水湖是哪个？",
+    "options": ["贝加尔湖", "苏必利尔湖", "维多利亚湖", "密歇根湖"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "geography",
+    "analysis": "苏必利尔湖是世界面积最大的淡水湖。贝加尔湖是最深的淡水湖，维多利亚湖是非洲最大的淡水湖。"
+  },
+  {
+    "text": "赤道穿过的大陆不包括以下哪个？",
+    "options": ["非洲", "南美洲", "亚洲", "欧洲"],
+    "correctAnswer": 3,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "赤道穿过非洲、南美洲、亚洲和大洋洲。欧洲完全位于北半球，没有被赤道穿过。"
+  },
+  {
+    "text": "中国面积最大的省级行政区是？",
+    "options": ["西藏自治区", "内蒙古自治区", "新疆维吾尔自治区", "青海省"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "新疆维吾尔自治区面积约166万平方公里，是中国陆地面积最大的省级行政区。"
+  },
+  {
+    "text": "以下哪个国家不是岛国？",
+    "options": ["日本", "韩国", "英国", "新西兰"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "韩国位于朝鲜半岛南部，与朝鲜接壤，不是岛国。日本、英国、新西兰都是岛国。"
+  },
+  {
+    "text": "世界上最深的海沟是哪个？",
+    "options": ["马里亚纳海沟", "汤加海沟", "千岛海沟", "菲律宾海沟"],
+    "correctAnswer": 0,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "马里亚纳海沟最深处约11034米，是地球已知的最深点，位于太平洋西部。"
+  },
+  {
+    "text": "中国最大的咸水湖是哪个？",
+    "options": ["鄱阳湖", "洞庭湖", "青海湖", "太湖"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "青海湖是中国最大的咸水湖，面积约4500平方公里。鄱阳湖是中国最大的淡水湖。"
+  },
+  {
+    "text": "以下哪个城市被称为雾都？",
+    "options": ["巴黎", "伦敦", "纽约", "东京"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "伦敦因气候湿润多雾，历史上曾多次发生严重空气污染事件，被称为雾都。"
+  },
+  {
+    "text": "世界上最大的群岛国家是哪个？",
+    "options": ["菲律宾", "印度尼西亚", "马来西亚", "日本"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "geography",
+    "analysis": "印度尼西亚由约17508个岛屿组成，是世界上最大的群岛国家，素有千岛之国之称。"
+  },
+  {
+    "text": "中国地势的主要特征是什么？",
+    "options": ["东高西低", "西高东低", "南高北低", "北高南低"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "中国地势西高东低，呈三级阶梯状分布，第一阶梯是青藏高原，第三阶梯是东部平原丘陵。"
+  },
+  {
+    "text": "地中海气候的特点是什么？",
+    "options": ["全年高温多雨", "夏季炎热干燥，冬季温和多雨", "全年温和湿润", "夏季高温多雨，冬季寒冷干燥"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "geography",
+    "analysis": "地中海气候的特点是夏季炎热干燥，冬季温和多雨，主要分布在南北纬30°-40°的大陆西岸。"
+  },
+  {
+    "text": "《红楼梦》的作者是谁？",
+    "options": ["罗贯中", "施耐庵", "曹雪芹", "吴承恩"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "《红楼梦》是清代作家曹雪芹创作的章回体长篇小说，是中国古典四大名著之首。"
+  },
+  {
+    "text": "以下哪位是诗仙？",
+    "options": ["杜甫", "李白", "白居易", "王维"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "李白，字太白，号青莲居士，唐代伟大的浪漫主义诗人，被后人誉为诗仙。"
+  },
+  {
+    "text": "《哈姆雷特》的作者是谁？",
+    "options": ["狄更斯", "莎士比亚", "马克·吐温", "托尔斯泰"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "《哈姆雷特》是英国剧作家威廉·莎士比亚创作的一部悲剧，是其最著名的作品之一。"
+  },
+  {
+    "text": "《西游记》中孙悟空的法号是什么？",
+    "options": ["斗战胜佛", "旃檀功德佛", "净坛使者", "金身罗汉"],
+    "correctAnswer": 0,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "取经成功后，孙悟空被封为斗战胜佛，唐僧被封为旃檀功德佛，猪八戒被封为净坛使者。"
+  },
+  {
+    "text": "以下哪个不是唐宋八大家之一？",
+    "options": ["李白", "韩愈", "苏轼", "欧阳修"],
+    "correctAnswer": 0,
+    "difficulty": 2,
+    "category": "literature",
+    "analysis": "唐宋八大家是韩愈、柳宗元、欧阳修、苏洵、苏轼、苏辙、王安石、曾巩。李白不在其列。"
+  },
+  {
+    "text": "《百年孤独》的作者是谁？",
+    "options": ["马尔克斯", "博尔赫斯", "聂鲁达", "略萨"],
+    "correctAnswer": 0,
+    "difficulty": 2,
+    "category": "literature",
+    "analysis": "《百年孤独》是哥伦比亚作家加西亚·马尔克斯的代表作，是魔幻现实主义文学的经典作品。"
+  },
+  {
+    "text": "《水浒传》中108将的首领是谁？",
+    "options": ["宋江", "晁盖", "卢俊义", "吴用"],
+    "correctAnswer": 0,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "宋江是梁山好汉的领袖，人称及时雨。晁盖是梁山早期首领，不幸中箭身亡后由宋江接任。"
+  },
+  {
+    "text": "以下哪部是鲁迅的作品？",
+    "options": ["《骆驼祥子》", "《阿Q正传》", "《围城》", "《边城》"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "《阿Q正传》是鲁迅创作的中篇小说。《骆驼祥子》作者老舍，《围城》作者钱锺书，《边城》作者沈从文。"
+  },
+  {
+    "text": "世界文学史上四大吝啬鬼不包括以下哪位？",
+    "options": ["夏洛克", "葛朗台", "泼留希金", "高老头"],
+    "correctAnswer": 3,
+    "difficulty": 4,
+    "category": "literature",
+    "analysis": "四大吝啬鬼：夏洛克（《威尼斯商人》）、葛朗台（《欧也妮·葛朗台》）、泼留希金（《死魂灵》）、阿巴贡（《悭吝人》）。"
+  },
+  {
+    "text": "《三国演义》中草船借箭的是谁？",
+    "options": ["周瑜", "诸葛亮", "鲁肃", "曹操"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "草船借箭是《三国演义》中赤壁之战的经典情节，诸葛亮利用大雾天气，成功从曹操处借到十万支箭。"
+  },
+  {
+    "text": "《老人与海》的作者是谁？",
+    "options": ["海明威", "福克纳", "菲茨杰拉德", "马克·吐温"],
+    "correctAnswer": 0,
+    "difficulty": 2,
+    "category": "literature",
+    "analysis": "《老人与海》是美国作家欧内斯特·海明威的代表作，1954年获得诺贝尔文学奖。"
+  },
+  {
+    "text": "以下哪位诗人被称为诗圣？",
+    "options": ["李白", "杜甫", "白居易", "李商隐"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "杜甫是唐代伟大的现实主义诗人，其诗多反映社会现实，被称为诗史，本人被称为诗圣。"
+  },
+  {
+    "text": "《围城》的作者是谁？",
+    "options": ["老舍", "巴金", "钱锺书", "茅盾"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "literature",
+    "analysis": "《围城》是钱锺书创作的长篇小说，被誉为新儒林外史，其中婚姻是一座围城成为经典名句。"
+  },
+  {
+    "text": "以下哪个不是莎士比亚的四大悲剧？",
+    "options": ["《哈姆雷特》", "《李尔王》", "《罗密欧与朱丽叶》", "《麦克白》"],
+    "correctAnswer": 2,
+    "difficulty": 3,
+    "category": "literature",
+    "analysis": "莎士比亚四大悲剧：《哈姆雷特》《奥赛罗》《李尔王》《麦克白》。《罗密欧与朱丽叶》是正剧，不属于四大悲剧。"
+  },
+  {
+    "text": "《水浒传》中智多星指的是谁？",
+    "options": ["宋江", "吴用", "林冲", "武松"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "吴用是梁山泊的军师，满腹经纶，足智多谋，人称智多星。"
+  },
+  {
+    "text": "《骆驼祥子》的作者是谁？",
+    "options": ["鲁迅", "老舍", "巴金", "曹禺"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "literature",
+    "analysis": "《骆驼祥子》是老舍（舒庆春）的代表作，描写了旧中国北平城里一个人力车夫的悲剧命运。"
+  },
+  {
+    "text": "足球比赛中每队上场人数是多少？",
+    "options": ["9人", "10人", "11人", "12人"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "sports",
+    "analysis": "足球比赛中每队上场球员11名，其中包括1名守门员和10名场上球员。"
+  },
+  {
+    "text": "篮球运动的发明者是哪个国家的人？",
+    "options": ["英国", "美国", "法国", "加拿大"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "篮球于1891年由加拿大人詹姆斯·奈史密斯在美国马萨诸塞州发明。"
+  },
+  {
+    "text": "奥林匹克运动会每几年举办一届？",
+    "options": ["2年", "3年", "4年", "5年"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "sports",
+    "analysis": "奥林匹克运动会每4年举办一届，分为夏季奥运会和冬季奥运会。"
+  },
+  {
+    "text": "NBA总冠军奖杯叫什么名字？",
+    "options": ["大力神杯", "奥布莱恩杯", "雷米特杯", "斯坦利杯"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "NBA总冠军奖杯是拉里·奥布莱恩冠军奖杯，以纪念前NBA总裁拉里·奥布莱恩。"
+  },
+  {
+    "text": "以下哪位被称为篮球之神？",
+    "options": ["勒布朗·詹姆斯", "科比·布莱恩特", "迈克尔·乔丹", "沙奎尔·奥尼尔"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "sports",
+    "analysis": "迈克尔·乔丹带领芝加哥公牛队6次获得NBA总冠军，被公认为历史上最伟大的篮球运动员，被誉为篮球之神。"
+  },
+  {
+    "text": "世界杯足球赛每几年举办一次？",
+    "options": ["2年", "3年", "4年", "5年"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "sports",
+    "analysis": "国际足联世界杯每4年举办一次，与奥运会交替进行，是世界上最高荣誉、最高规格的足球赛事。"
+  },
+  {
+    "text": "中国第一个获得奥运会金牌的运动员是谁？",
+    "options": ["李宁", "许海峰", "郎平", "邓亚萍"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "1984年洛杉矶奥运会，许海峰在男子自选手枪慢射项目中获得金牌，这是中国奥运史上的第一枚金牌。"
+  },
+  {
+    "text": "网球四大满贯不包括以下哪个？",
+    "options": ["温网", "美网", "法网", "中网"],
+    "correctAnswer": 3,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "网球四大满贯是澳大利亚网球公开赛（澳网）、法国网球公开赛（法网）、温布尔登网球锦标赛（温网）、美国网球公开赛（美网）。"
+  },
+  {
+    "text": "以下哪位是中国的飞人？",
+    "options": ["姚明", "刘翔", "林丹", "李娜"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "sports",
+    "analysis": "刘翔是中国田径110米栏运动员，2004年雅典奥运会金牌得主，被誉为亚洲飞人。"
+  },
+  {
+    "text": "F1方程式赛车中，哪个车队获得的总冠军最多？",
+    "options": ["迈凯伦", "法拉利", "梅赛德斯", "红牛"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "sports",
+    "analysis": "法拉利车队是F1历史上最成功的车队，获得过多次车队总冠军和车手总冠军。"
+  },
+  {
+    "text": "羽毛球比赛每局多少分？",
+    "options": ["11分", "15分", "21分", "25分"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "羽毛球比赛采用21分制，每球得分，三局两胜。2006年正式从15分制改为21分制。"
+  },
+  {
+    "text": "以下哪位被称为小巨人？",
+    "options": ["王治郅", "巴特尔", "姚明", "易建联"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "sports",
+    "analysis": "姚明身高2.26米，是NBA历史上首位外籍状元秀，被称为小巨人，2016年入选篮球名人堂。"
+  },
+  {
+    "text": "马拉松的全程距离大约是多少？",
+    "options": ["40公里", "42.195公里", "45公里", "50公里"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "马拉松赛全程距离为42.195公里，这个距离是根据公元前490年菲迪皮德斯从马拉松跑到雅典的距离确定的。"
+  },
+  {
+    "text": "以下哪个国家获得过最多的世界杯冠军？",
+    "options": ["德国", "意大利", "巴西", "阿根廷"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "巴西国家男子足球队曾5次获得世界杯冠军（1958、1962、1970、1994、2002），是夺冠次数最多的球队。"
+  },
+  {
+    "text": "游泳比赛中，以下哪个不是正式的比赛泳姿？",
+    "options": ["蝶泳", "仰泳", "侧泳", "蛙泳"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "sports",
+    "analysis": "正式游泳比赛的泳姿有四种：自由泳、蛙泳、仰泳、蝶泳。侧泳不属于正式比赛泳姿。"
+  },
+  {
+    "text": "乒乓球被称为中国的国球，中国乒乓球队在哪届奥运会上首次包揽全部金牌？",
+    "options": ["1992巴塞罗那", "1996亚特兰大", "2000悉尼", "2008北京"],
+    "correctAnswer": 2,
+    "difficulty": 4,
+    "category": "sports",
+    "analysis": "2000年悉尼奥运会，中国乒乓球队首次包揽男单、女单、男双、女双四枚金牌。"
+  },
+  {
+    "text": "《哈利·波特》系列小说的作者是谁？",
+    "options": ["J.R.R.托尔金", "J.K.罗琳", "C.S.刘易斯", "斯蒂芬·金"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "《哈利·波特》系列是英国作家J.K.罗琳（J. K. Rowling）创作的魔幻文学系列小说，共7部。"
+  },
+  {
+    "text": "以下哪位是《泰坦尼克号》的导演？",
+    "options": ["斯皮尔伯格", "卡梅隆", "诺兰", "卢卡斯"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "entertainment",
+    "analysis": "《泰坦尼克号》由詹姆斯·卡梅隆执导，1997年上映，获得11项奥斯卡金像奖，全球票房超22亿美元。"
+  },
+  {
+    "text": "披头士乐队来自哪个国家？",
+    "options": ["美国", "英国", "德国", "瑞典"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "披头士（The Beatles）是1960年在英国利物浦成立的摇滚乐队，成员包括约翰·列侬、保罗·麦卡特尼等。"
+  },
+  {
+    "text": "以下哪个不是中国的四大名著？",
+    "options": ["《三国演义》", "《水浒传》", "《聊斋志异》", "《红楼梦》"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "中国四大名著是《红楼梦》《西游记》《三国演义》《水浒传》。《聊斋志异》是清代蒲松龄的文言短篇小说集。"
+  },
+  {
+    "text": "以下哪位是迈克尔·杰克逊的经典舞步？",
+    "options": ["踢踏舞", "太空步", "机械舞", "霹雳舞"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "太空步（Moonwalk）是迈克尔·杰克逊的标志性舞蹈动作，首次在1983年表演《Billie Jean》时展示。"
+  },
+  {
+    "text": "奥斯卡金像奖的正式名称是什么？",
+    "options": ["电影艺术与科学学院奖", "金球奖", "艾美奖", "戛纳金棕榈奖"],
+    "correctAnswer": 0,
+    "difficulty": 3,
+    "category": "entertainment",
+    "analysis": "奥斯卡金像奖的正式名称是电影艺术与科学学院奖（Academy Award），是世界历史最悠久的电影奖项。"
+  },
+  {
+    "text": "以下哪个是迪士尼的经典动画电影？",
+    "options": ["《狮子王》", "《功夫熊猫》", "《怪物史莱克》", "《冰雪奇缘》"],
+    "correctAnswer": 0,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "《狮子王》是迪士尼1994年推出的经典动画电影，《功夫熊猫》是梦工厂作品，《怪物史莱克》是梦工厂作品，《冰雪奇缘》也是迪士尼作品但较新。"
+  },
+  {
+    "text": "以下哪位演员饰演过007詹姆斯·邦德？",
+    "options": ["汤姆·克鲁斯", "布鲁斯南", "布拉德·皮特", "莱昂纳多"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "entertainment",
+    "analysis": "皮尔斯·布鲁斯南曾在《黄金眼》《明日帝国》《纵横天下》《择日而亡》四部007电影中饰演邦德。"
+  },
+  {
+    "text": "《复仇者联盟》系列电影是哪家公司出品的？",
+    "options": ["DC", "漫威", "华纳", "环球"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "《复仇者联盟》系列是漫威影业（Marvel Studios）出品的超级英雄电影，基于漫威漫画改编。"
+  },
+  {
+    "text": "以下哪位是华语乐坛的歌神？",
+    "options": ["刘德华", "张学友", "黎明", "郭富城"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "张学友是香港四大天王之一，以其卓越的演唱实力被称为歌神，唱片销量全球超过6000万张。"
+  },
+  {
+    "text": "《星球大战》系列的导演是谁？",
+    "options": ["詹姆斯·卡梅隆", "乔治·卢卡斯", "史蒂文·斯皮尔伯格", "雷德利·斯科特"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "entertainment",
+    "analysis": "《星球大战》系列由乔治·卢卡斯创造并执导了前三部，后来迪士尼收购后由其他导演继续拍摄。"
+  },
+  {
+    "text": "以下哪位是《还珠格格》中小燕子的扮演者？",
+    "options": ["林心如", "赵薇", "范冰冰", "王艳"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "《还珠格格》中赵薇饰演小燕子，林心如饰演夏紫薇，范冰冰饰演金锁，王艳饰演晴儿。"
+  },
+  {
+    "text": "以下哪个乐队被称为中国摇滚之父？",
+    "options": ["黑豹乐队", "唐朝乐队", "崔健", "Beyond"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "entertainment",
+    "analysis": "崔健是中国摇滚的开山鼻祖，1986年演唱《一无所有》标志着中国摇滚的诞生，被誉为中国摇滚之父。"
+  },
+  {
+    "text": "以下哪部电影获得了奥斯卡最佳影片奖？",
+    "options": ["《肖申克的救赎》", "《阿甘正传》", "《霸王别姬》", "《泰坦尼克号》"],
+    "correctAnswer": 1,
+    "difficulty": 3,
+    "category": "entertainment",
+    "analysis": "1995年，《阿甘正传》获得包括最佳影片在内的6项奥斯卡奖。《肖申克的救赎》同年入围但未获奖。"
+  },
+  {
+    "text": "以下哪位是日本著名动画导演？",
+    "options": ["黑泽明", "宫崎骏", "北野武", "今敏"],
+    "correctAnswer": 1,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "宫崎骏是日本著名动画导演，吉卜力工作室创始人，代表作有《千与千寻》《龙猫》《天空之城》等。"
+  },
+  {
+    "text": "以下哪个不是周星驰的电影？",
+    "options": ["《大话西游》", "《喜剧之王》", "《无间道》", "《功夫》"],
+    "correctAnswer": 2,
+    "difficulty": 2,
+    "category": "entertainment",
+    "analysis": "《无间道》是刘伟强、麦兆辉执导的经典警匪片，由刘德华、梁朝伟主演，不是周星驰的作品。"
+  },
+  {
+    "text": "以下哪个是中国传统乐器？",
+    "options": ["钢琴", "吉他", "古筝", "小提琴"],
+    "correctAnswer": 2,
+    "difficulty": 1,
+    "category": "entertainment",
+    "analysis": "古筝是中国传统弹拨乐器，已有2500多年历史。钢琴、吉他、小提琴都是西洋乐器。"
+  },
+  {
+    "text": "计算机网络OSI模型有几层？",
+    "options": ["5层", "6层", "7层", "8层"],
+    "correctAnswer": 2,
+    "difficulty": 4,
+    "category": "technology",
+    "analysis": "OSI（开放系统互连）参考模型将网络通信分为7层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层。"
+  },
+  {
+    "text": "以下哪个是中国古代四大美女之一？",
+    "options": ["赵飞燕", "杨贵妃", "陈圆圆", "苏妲己"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "history",
+    "analysis": "中国古代四大美女是西施、王昭君、貂蝉、杨贵妃（杨玉环），享有沉鱼落雁之容，闭月羞花之貌的美誉。"
+  },
+  {
+    "text": "地球上最大的热带雨林是哪个？",
+    "options": ["刚果雨林", "亚马逊雨林", "东南亚雨林", "云南热带雨林"],
+    "correctAnswer": 1,
+    "difficulty": 2,
+    "category": "geography",
+    "analysis": "亚马逊热带雨林位于南美洲，面积约550万平方公里，是世界最大的热带雨林，被称为地球之肺。"
+  }
+]
