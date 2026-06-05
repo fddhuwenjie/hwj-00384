@@ -16,7 +16,7 @@ export default function RoomWait() {
   const navigate = useNavigate();
   const { players, room, settings, setRoom, setPlayers, setSettings, updatePlayer, resetRoom } = useRoomStore();
   const { playerId, nickname } = useUserStore();
-  const { connect, emit, useEvents, isConnected } = useSocket();
+  const { connect, emit, bindEvents, isConnected } = useSocket();
 
   const [loading, setLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
@@ -71,27 +71,33 @@ export default function RoomWait() {
     loadRoom();
   }, [code, nickname, room, players, setRoom, setPlayers, setSettings]);
 
-  useEvents({
-    'room:playerJoined': (data) => {
-      useRoomStore.getState().addPlayer(data.player);
-    },
-    'room:playerLeft': (data) => {
-      useRoomStore.getState().removePlayer(data.playerId);
-    },
-    'room:playerKicked': (data) => {
-      if (data.playerId === playerId) {
-        navigate('/lobby');
-      } else {
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const cleanup = bindEvents({
+      'room:playerJoined': (data) => {
+        useRoomStore.getState().addPlayer(data.player);
+      },
+      'room:playerLeft': (data) => {
         useRoomStore.getState().removePlayer(data.playerId);
-      }
-    },
-    'room:settingsUpdated': (data) => {
-      useRoomStore.getState().setSettings(data.settings);
-    },
-    'room:gameStarting': () => {
-      navigate(`/game/${code}`);
-    },
-  });
+      },
+      'room:playerKicked': (data) => {
+        if (data.playerId === playerId) {
+          navigate('/lobby');
+        } else {
+          useRoomStore.getState().removePlayer(data.playerId);
+        }
+      },
+      'room:settingsUpdated': (data) => {
+        useRoomStore.getState().setSettings(data.settings);
+      },
+      'room:gameStarting': () => {
+        navigate(`/game/${code}`);
+      },
+    });
+
+    return cleanup;
+  }, [isConnected, bindEvents, code, playerId, navigate]);
 
   useEffect(() => {
     if (isConnected && playerId && code) {

@@ -45,7 +45,7 @@ interface SearchResult {
 export default function Friends() {
   const navigate = useNavigate();
   const { playerId } = useUserStore();
-  const { isConnected, emit, useEvents } = useSocket();
+  const { isConnected, emit, bindEvents } = useSocket();
   const [activeTab, setActiveTab] = useState<FriendTab>('list');
   const [friends, setFriends] = useState<Friend[]>([]);
   const [requests, setRequests] = useState<FriendRequest[]>([]);
@@ -87,47 +87,53 @@ export default function Friends() {
     loadRequests();
   }, [loadFriends, loadRequests]);
 
-  useEvents({
-    'friend:online': (data: { playerId: string }) => {
-      setFriends((prev) =>
-        prev.map((f) =>
-          f.playerId === data.playerId ? { ...f, isOnline: true } : f
-        )
-      );
-    },
-    'friend:offline': (data: { playerId: string }) => {
-      setFriends((prev) =>
-        prev.map((f) =>
-          f.playerId === data.playerId ? { ...f, isOnline: false, isInGame: false } : f
-        )
-      );
-    },
-    'friend:game:start': (data: { playerId: string; roomCode: string }) => {
-      setFriends((prev) =>
-        prev.map((f) =>
-          f.playerId === data.playerId
-            ? { ...f, isInGame: true, roomCode: data.roomCode }
-            : f
-        )
-      );
-    },
-    'friend:game:end': (data: { playerId: string }) => {
-      setFriends((prev) =>
-        prev.map((f) =>
-          f.playerId === data.playerId ? { ...f, isInGame: false, roomCode: undefined } : f
-        )
-      );
-    },
-    'friend:request:received': (data: FriendRequest) => {
-      setRequests((prev) => [data, ...prev]);
-    },
-    'friend:request:accepted': (data: Friend) => {
-      setFriends((prev) => [data, ...prev]);
-      setRequests((prev) =>
-        prev.filter((r) => r.senderId !== data.playerId && r.receiverId !== data.playerId)
-      );
-    },
-  });
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const cleanup = bindEvents({
+      'friend:online': (data: { playerId: string }) => {
+        setFriends((prev) =>
+          prev.map((f) =>
+            f.playerId === data.playerId ? { ...f, isOnline: true } : f
+          )
+        );
+      },
+      'friend:offline': (data: { playerId: string }) => {
+        setFriends((prev) =>
+          prev.map((f) =>
+            f.playerId === data.playerId ? { ...f, isOnline: false, isInGame: false } : f
+          )
+        );
+      },
+      'friend:game:start': (data: { playerId: string; roomCode: string }) => {
+        setFriends((prev) =>
+          prev.map((f) =>
+            f.playerId === data.playerId
+              ? { ...f, isInGame: true, roomCode: data.roomCode }
+              : f
+          )
+        );
+      },
+      'friend:game:end': (data: { playerId: string }) => {
+        setFriends((prev) =>
+          prev.map((f) =>
+            f.playerId === data.playerId ? { ...f, isInGame: false, roomCode: undefined } : f
+          )
+        );
+      },
+      'friend:request:received': (data: FriendRequest) => {
+        setRequests((prev) => [data, ...prev]);
+      },
+      'friend:request:accepted': (data: Friend) => {
+        setFriends((prev) => [data, ...prev]);
+        setRequests((prev) =>
+          prev.filter((r) => r.senderId !== data.playerId && r.receiverId !== data.playerId)
+        );
+      },
+    });
+
+    return cleanup;
+  }, [isConnected, bindEvents]);
 
   const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) {

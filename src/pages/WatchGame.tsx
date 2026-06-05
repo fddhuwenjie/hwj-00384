@@ -21,7 +21,7 @@ interface PlayerState {
 export default function WatchGame() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { connect, emit, useEvents, isConnected } = useSocket();
+  const { connect, emit, bindEvents, isConnected } = useSocket();
   const { playerId, nickname, avatar } = useUserStore();
 
   const [phase, setPhase] = useState<'waiting' | 'question' | 'reveal' | 'finished'>('waiting');
@@ -45,61 +45,67 @@ export default function WatchGame() {
     connect();
   }, [connect]);
 
-  useEvents({
-    'watch:viewerJoined': (data) => {
-      setViewerCount(data.count);
-    },
-    'watch:viewerLeft': (data) => {
-      setViewerCount(data.count);
-    },
-    'watch:danmu': (data) => {
-      setDanmuMessages((prev) => [...prev, data]);
-    },
-    'watch:gameState': (data) => {
-      setPhase(data.phase);
-      if (data.question) {
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const cleanup = bindEvents({
+      'watch:viewerJoined': (data) => {
+        setViewerCount(data.count);
+      },
+      'watch:viewerLeft': (data) => {
+        setViewerCount(data.count);
+      },
+      'watch:danmu': (data) => {
+        setDanmuMessages((prev) => [...prev, data]);
+      },
+      'watch:gameState': (data) => {
+        setPhase(data.phase);
+        if (data.question) {
+          setCurrentQuestion(data.question);
+        }
+        if (data.questionIndex !== undefined) {
+          setQuestionIndex(data.questionIndex);
+        }
+        if (data.remainingTime !== undefined) {
+          setRemainingTime(data.remainingTime);
+        }
+        setPlayerStates(data.playerStates);
+      },
+      'game:started': (data) => {
+        setTotalQuestions(data.totalQuestions);
+        setPhase('question');
+      },
+      'game:question': (data) => {
         setCurrentQuestion(data.question);
-      }
-      if (data.questionIndex !== undefined) {
         setQuestionIndex(data.questionIndex);
-      }
-      if (data.remainingTime !== undefined) {
-        setRemainingTime(data.remainingTime);
-      }
-      setPlayerStates(data.playerStates);
-    },
-    'game:started': (data) => {
-      setTotalQuestions(data.totalQuestions);
-      setPhase('question');
-    },
-    'game:question': (data) => {
-      setCurrentQuestion(data.question);
-      setQuestionIndex(data.questionIndex);
-      setRemainingTime(Math.ceil((data.endTime - Date.now()) / 1000));
-      setCorrectAnswer(null);
-      setAnalysis('');
-      setPhase('question');
-    },
-    'game:reveal': (data) => {
-      setCorrectAnswer(data.correctAnswer);
-      setAnalysis(data.analysis);
-      setStandings(data.standings);
-      setPhase('reveal');
-    },
-    'game:finished': (data) => {
-      setFinalStandings(data.finalStandings.map((p) => ({
-        id: p.playerId,
-        nickname: p.nickname,
-        avatar: players.find((pl) => pl.id === p.playerId)?.avatar || '👤',
-        score: p.score,
-        streak: p.maxStreak,
-        isReady: true,
-        isOnline: true,
-      })));
-      setPhase('finished');
-      setShowGameEnd(true);
-    },
-  });
+        setRemainingTime(Math.ceil((data.endTime - Date.now()) / 1000));
+        setCorrectAnswer(null);
+        setAnalysis('');
+        setPhase('question');
+      },
+      'game:reveal': (data) => {
+        setCorrectAnswer(data.correctAnswer);
+        setAnalysis(data.analysis);
+        setStandings(data.standings);
+        setPhase('reveal');
+      },
+      'game:finished': (data) => {
+        setFinalStandings(data.finalStandings.map((p) => ({
+          id: p.playerId,
+          nickname: p.nickname,
+          avatar: players.find((pl) => pl.id === p.playerId)?.avatar || '👤',
+          score: p.score,
+          streak: p.maxStreak,
+          isReady: true,
+          isOnline: true,
+        })));
+        setPhase('finished');
+        setShowGameEnd(true);
+      },
+    });
+
+    return cleanup;
+  }, [isConnected, bindEvents, players]);
 
   useEffect(() => {
     if (isConnected && code) {

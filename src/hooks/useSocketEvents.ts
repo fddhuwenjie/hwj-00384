@@ -4,20 +4,14 @@ import { useNotificationStore } from '@/stores/useNotificationStore';
 import type { FriendRequest, FriendInviteData, Achievement } from '@/types';
 
 export function useSocketEvents() {
-  const { useEvents, isConnected } = useSocket();
-  const {
-    addFriendInvite,
-    addFriendRequest,
-    addNotification,
-    setCurrentAchievement,
-  } = useNotificationStore();
+  const { bindEvents, isConnected } = useSocket();
 
   useEffect(() => {
     if (!isConnected) return;
 
-    const cleanup = useEvents({
+    const cleanup = bindEvents({
       'achievement:unlocked': (data: { achievement: Achievement; unlockedAt: string }) => {
-        setCurrentAchievement(data);
+        useNotificationStore.getState().setCurrentAchievement(data);
       },
 
       'friend:online': (data: { playerId: string }) => {
@@ -29,12 +23,13 @@ export function useSocketEvents() {
       },
 
       'friend:invite:received': (data: FriendInviteData) => {
-        addFriendInvite(data);
+        useNotificationStore.getState().addFriendInvite(data);
       },
 
       'friend:request:received': (data: FriendRequest) => {
-        addFriendRequest(data);
-        addNotification({
+        const state = useNotificationStore.getState();
+        state.addFriendRequest(data);
+        state.addNotification({
           id: `request-${data.id}`,
           type: 'info',
           title: '新的好友请求',
@@ -50,10 +45,10 @@ export function useSocketEvents() {
         message: string;
         createdAt: number;
       }) => {
-        addNotification(data);
+        useNotificationStore.getState().addNotification(data);
       },
     });
 
     return cleanup;
-  }, [isConnected, useEvents, addFriendInvite, addFriendRequest, addNotification, setCurrentAchievement]);
+  }, [isConnected, bindEvents]);
 }

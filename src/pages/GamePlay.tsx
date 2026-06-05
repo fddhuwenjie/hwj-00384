@@ -14,7 +14,7 @@ import type { Question, Player, ScoreDetail } from '@/types';
 export default function GamePlay() {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { connect, emit, useEvents, isConnected } = useSocket();
+  const { connect, emit, bindEvents, isConnected } = useSocket();
   const {
     players,
     currentQuestionIndex,
@@ -59,49 +59,55 @@ export default function GamePlay() {
     setShowStreakBanner(false);
   }, []);
 
-  useEvents({
-    'room:gameStarting': (data) => {
-      setGameStartCountdown(data.countdown);
-      setShowGameStart(true);
-      setGamePhase('countdown');
-    },
-    'game:started': (data) => {
-      setTotalQuestions(data.totalQuestions);
-      setTimeRemaining(data.timeLimit);
-      setGamePhase('question');
-      setShowGameStart(false);
-      setGameStartCountdown(null);
-    },
-    'game:question': (data) => {
-      setCurrentQuestion(data.question);
-      setCurrentQuestionIndex(data.questionIndex);
-      setSelectedAnswer(null);
-      setShowResult(false);
-      setHasAnswered(false);
-      clearAnsweredPlayers();
-      setTimeRemaining(Math.ceil((data.endTime - Date.now()) / 1000));
-      setGamePhase('question');
-    },
-    'game:playerAnswered': (data) => {
-      addAnsweredPlayer(data.playerId, 0, data.responseTime);
-      if (data.playerId === playerId) {
-        setHasAnswered(true);
-      }
-    },
-    'game:reveal': (data) => {
-      setShowResult(true);
-      setScores(data.scores);
-      setStandings(data.standings);
-      setGamePhase('reveal');
-      data.standings.forEach((player) => {
-        updatePlayer(player.id, { score: player.score, streak: player.streak });
-      });
-    },
-    'game:finished': (data) => {
-      setGamePhase('finished');
-      navigate(`/result/${code}`, { state: { recordId: data.recordId, standings: data.finalStandings } });
-    },
-  });
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const cleanup = bindEvents({
+      'room:gameStarting': (data) => {
+        setGameStartCountdown(data.countdown);
+        setShowGameStart(true);
+        setGamePhase('countdown');
+      },
+      'game:started': (data) => {
+        setTotalQuestions(data.totalQuestions);
+        setTimeRemaining(data.timeLimit);
+        setGamePhase('question');
+        setShowGameStart(false);
+        setGameStartCountdown(null);
+      },
+      'game:question': (data) => {
+        setCurrentQuestion(data.question);
+        setCurrentQuestionIndex(data.questionIndex);
+        setSelectedAnswer(null);
+        setShowResult(false);
+        setHasAnswered(false);
+        clearAnsweredPlayers();
+        setTimeRemaining(Math.ceil((data.endTime - Date.now()) / 1000));
+        setGamePhase('question');
+      },
+      'game:playerAnswered': (data) => {
+        addAnsweredPlayer(data.playerId, 0, data.responseTime);
+        if (data.playerId === playerId) {
+          setHasAnswered(true);
+        }
+      },
+      'game:reveal': (data) => {
+        setShowResult(true);
+        setScores(data.scores);
+        setStandings(data.standings);
+        setGamePhase('reveal');
+        data.standings.forEach((player) => {
+          updatePlayer(player.id, { score: player.score, streak: player.streak });
+        });
+      },
+      'game:finished': (data) => {
+        setGamePhase('finished');
+        navigate(`/result/${code}`, { state: { recordId: data.recordId, standings: data.finalStandings } });
+      },
+    });
+
+    return cleanup;
+  }, [isConnected, bindEvents, code, clearAnsweredPlayers, updatePlayer, navigate]);
 
   useEffect(() => {
     if (gameStartCountdown !== null && gameStartCountdown > 0) {

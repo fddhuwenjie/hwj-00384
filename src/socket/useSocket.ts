@@ -49,8 +49,8 @@ export function useSocket() {
     };
   }, []);
 
-  const connect = useCallback(() => {
-    connectSocket();
+  const connect = useCallback((playerId?: string) => {
+    connectSocket(playerId);
   }, []);
 
   const disconnect = useCallback(() => {
@@ -80,26 +80,24 @@ export function useSocket() {
     return () => {};
   }, []);
 
-  const useEvents = useCallback((handlers: EventHandlerMap) => {
-    useEffect(() => {
-      const socket = socketRef.current;
-      if (!socket) return;
+  const bindEvents = useCallback((handlers: EventHandlerMap): (() => void) => {
+    const socket = socketRef.current;
+    if (!socket) return () => {};
 
-      const cleanups: (() => void)[] = [];
+    const cleanups: (() => void)[] = [];
 
-      Object.entries(handlers).forEach(([event, handler]) => {
-        if (handler) {
-          (socket.on as any)(event, handler);
-          cleanups.push(() => {
-            (socket.off as any)(event, handler);
-          });
-        }
-      });
+    Object.entries(handlers).forEach(([event, handler]) => {
+      if (handler) {
+        (socket.on as any)(event, handler);
+        cleanups.push(() => {
+          (socket.off as any)(event, handler);
+        });
+      }
+    });
 
-      return () => {
-        cleanups.forEach((cleanup) => cleanup());
-      };
-    }, [handlers]);
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
   }, []);
 
   return {
@@ -111,6 +109,6 @@ export function useSocket() {
     disconnect,
     emit,
     on,
-    useEvents,
+    bindEvents,
   };
 }
