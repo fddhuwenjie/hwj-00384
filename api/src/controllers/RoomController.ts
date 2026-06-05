@@ -125,19 +125,22 @@ router.post('/', asyncHandler(async (req: Request, res: Response) => {
 
   rooms.set(code, room);
 
-  res.status(201).json({
-    room: {
-      code: room.code,
-      ownerId: room.ownerId,
-      settings: {
-        ...settings,
-        password: undefined,
-      },
-      status: room.status,
-      createdAt: room.createdAt,
-      hasPassword: room.hasPassword,
+  const roomData = {
+    code: room.code,
+    ownerId: room.ownerId,
+    settings: {
+      ...settings,
+      password: undefined,
     },
-    player: owner,
+    status: room.status,
+    createdAt: room.createdAt,
+    hasPassword: room.hasPassword,
+    players: room.players,
+  };
+
+  res.status(201).json({
+    success: true,
+    data: roomData,
   });
 }));
 
@@ -189,20 +192,22 @@ router.post('/:code/join', asyncHandler(async (req: Request, res: Response) => {
 
   room.players.push(player);
 
-  res.json({
-    room: {
-      code: room.code,
-      ownerId: room.ownerId,
-      settings: {
-        ...room.settings,
-        password: undefined,
-      },
-      status: room.status,
-      createdAt: room.createdAt,
-      hasPassword: room.hasPassword,
+  const roomData = {
+    code: room.code,
+    ownerId: room.ownerId,
+    settings: {
+      ...room.settings,
+      password: undefined,
     },
-    player,
+    status: room.status,
+    createdAt: room.createdAt,
+    hasPassword: room.hasPassword,
     players: room.players,
+  };
+
+  res.json({
+    success: true,
+    data: roomData,
   });
 }));
 

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
 import { useUserStore } from '@/stores/useUserStore';
+import { connectSocket } from '@/socket';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       if (!useUserStore.getState().playerId) {
         setPlayerId(uuidv4());
       }
+      connectSocket();
       navigate('/lobby');
     }
   };
