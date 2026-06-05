@@ -87,6 +87,9 @@ export const roomApi = {
       `/rooms?${new URLSearchParams(params as Record<string, string>).toString()}`
     ),
 
+  get: (code: string) =>
+    baseFetch<ApiResponse<Room>>(`/rooms/${code}`),
+
   create: (data: {
     nickname: string;
     settings: Partial<RoomSettings>;

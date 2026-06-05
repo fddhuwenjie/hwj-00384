@@ -76,6 +76,33 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
   res.json(publicRooms);
 }));
 
+router.get('/:code', asyncHandler(async (req: Request, res: Response) => {
+  const { code } = req.params;
+
+  const room = rooms.get(code);
+  if (!room) {
+    throw createError('Room not found', 404);
+  }
+
+  const roomData = {
+    code: room.code,
+    ownerId: room.ownerId,
+    settings: {
+      ...room.settings,
+      password: undefined,
+    },
+    status: room.status,
+    createdAt: room.createdAt,
+    hasPassword: room.hasPassword,
+    players: room.players,
+  };
+
+  res.json({
+    success: true,
+    data: roomData,
+  });
+}));
+
 router.post('/', asyncHandler(async (req: Request, res: Response) => {
   const { nickname, settings } = req.body as {
     nickname: string;

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Share2, Copy, Settings, Play, UserPlus, LogOut, Crown, RefreshCw, XCircle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -24,6 +24,7 @@ export default function RoomWait() {
   const [readyLoading, setReadyLoading] = useState(false);
   const [kickLoadingId, setKickLoadingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const roomLoadedRef = useRef(false);
 
   useEffect(() => {
     connect();
@@ -31,17 +32,34 @@ export default function RoomWait() {
 
   useEffect(() => {
     const loadRoom = async () => {
-      if (!code || !nickname) return;
+      if (!code || !nickname || roomLoadedRef.current) return;
 
       setLoading(true);
       setError(null);
       try {
-        const response = await roomApi.join(code, { nickname });
+        if (room && room.code === code && players.length > 0) {
+          roomLoadedRef.current = true;
+          setLoading(false);
+          return;
+        }
+
+        const response = await roomApi.get(code);
         if (response.data) {
           setRoom(response.data);
           setPlayers(response.data.players);
           setSettings(response.data.settings);
+
+          const playerExists = response.data.players.some(p => p.nickname === nickname);
+          if (!playerExists) {
+            const joinResponse = await roomApi.join(code, { nickname });
+            if (joinResponse.data) {
+              setRoom(joinResponse.data);
+              setPlayers(joinResponse.data.players);
+              setSettings(joinResponse.data.settings);
+            }
+          }
         }
+        roomLoadedRef.current = true;
       } catch (err) {
         console.error('Failed to load room:', err);
         setError(err instanceof Error ? err.message : '加载房间失败');
@@ -51,7 +69,7 @@ export default function RoomWait() {
     };
 
     loadRoom();
-  }, [code, nickname, setRoom, setPlayers, setSettings]);
+  }, [code, nickname, room, players, setRoom, setPlayers, setSettings]);
 
   useEvents({
     'room:playerJoined': (data) => {
